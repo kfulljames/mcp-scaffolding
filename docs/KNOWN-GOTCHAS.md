@@ -8,7 +8,7 @@ the moment you hit something new and burn time on it — that's the whole value 
 
 `.nvmrc` (currently `22.12.0`) is what CI, `actions/setup-node`, and a local `nvm use` all key
 off of — but nothing enforces that it's new enough for whatever's in `node_modules`. This bit
-a real CI run: `.nvmrc` was `20.11.0`, which satisfied every *runtime* requirement (this
+a real CI run: `.nvmrc` was `20.11.0`, which satisfied every _runtime_ requirement (this
 scaffold's own `engines.node`, at the time also `>=20.11.0`), but vitest 4's `rolldown`
 dependency requires `node:util`'s `styleText` export (added in Node 20.12.0) and otherwise
 declares `^20.19.0 || >=22.12.0` — so `npm run test:coverage` crashed at startup in CI with a
@@ -20,7 +20,7 @@ Symptom to recognize: a `Startup Error` / `SyntaxError: The requested module 'no
 not provide an export named 'X'` from deep inside a dependency (`rolldown`, `vite`, etc.),
 immediately when a script starts, not a real test/type/lint failure. Fix is to bump `.nvmrc`
 (and `package.json`'s `engines.node`, and the `Dockerfile` base image) to whatever the
-*strictest* devDependency actually requires — check `npm ci`'s `EBADENGINE` warnings, which
+_strictest_ devDependency actually requires — check `npm ci`'s `EBADENGINE` warnings, which
 name the exact package and required range; don't just bump `.nvmrc` by one patch version and
 hope. After any major devDependency upgrade (especially vitest/vite), re-run `npm ci` on a
 clean `node_modules` and read the `EBADENGINE` warnings before assuming the pinned Node version
@@ -44,8 +44,8 @@ in the future — it may resolve on its own once upstream updates its `@hono/nod
 reach for locally. CI's "Typecheck, lint, test, build" job runs `npm run test:coverage`
 instead, which additionally enforces the coverage thresholds in `vitest.config.ts` (80%
 statements/functions/lines, 75% branches). A change that passes `npm test` locally can still
-fail CI if it drops coverage — run `npm run test:coverage` (or `npm run verify`, once it's
-updated to call it) before pushing, not just `npm test`. This bit the very first CI run against
+fail CI if it drops coverage — run `npm run verify` (which now runs `test:coverage`, not plain
+`test`) before pushing, not just `npm test`. This bit the very first CI run against
 this scaffold: 58 tests passed locally, but coverage sat at ~46% because entire files
 (`src/auth/http-authenticator.ts`, `src/safety/rate-limiter.ts`, `src/server/transports.ts`,
 the bulk of `src/server/create-server.ts`, `src/vendor/http-client.ts`) had zero test coverage
