@@ -38,6 +38,9 @@ open:
   agents scoped to exactly the concerns in `docs/SECURITY.md` and the MCP protocol
   respectively. Dispatch them before merging any change to `src/auth/`, `src/safety/`,
   `src/tools/`, or `src/server/`.
+- `.claude/commands/` — explicit slash commands into the same playbook, for when you'd rather
+  type a command than rely on the skill inferring intent: `/mcp-new-server <vendor-name>`,
+  `/mcp-add-tool <what it should do>`, `/mcp-review`.
 
 ## Quickstart
 

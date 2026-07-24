@@ -58,6 +58,13 @@ read every time. For anything touching `src/auth/`, `src/safety/`, `src/tools/`,
 `src/server/`, prefer dispatching the `mcp-security-reviewer` and, for protocol/transport
 changes, `mcp-protocol-reviewer` agents (`.claude/agents/`) before calling the work done.
 
+Three slash commands (`.claude/commands/`) give an FDE an explicit, always-available entry
+point into the same playbook, rather than relying on the skill guessing intent from phrasing:
+
+- `/mcp-new-server <vendor-name>` — start a new vendor server from this template.
+- `/mcp-add-tool <what it should do>` — add a tool to an existing server.
+- `/mcp-review` — dispatch both reviewer agents against the current changes before merging.
+
 If an implementation need contradicts `SPEC.md`, stop and say so explicitly rather than
 silently reinterpreting the spec — flag it in the PR description (see the threat-model-delta
 section of `.github/pull_request_template.md`), and if it's a recurring gotcha, add it to
