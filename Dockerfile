@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20.11-slim AS build
+FROM node:22.12-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 COPY . .
 RUN npm run build && npm run generate:catalogue && npm prune --omit=dev
 
-FROM node:20.11-slim AS runtime
+FROM node:22.12-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
 # Never bake .env / secrets into the image — supplied at run time (--env-file,

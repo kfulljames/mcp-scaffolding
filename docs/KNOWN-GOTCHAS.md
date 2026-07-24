@@ -4,6 +4,28 @@ A running list of things that will bite you if you don't know them going in. Add
 the moment you hit something new and burn time on it — that's the whole value of this doc
 (see `MCP-SCAFFOLD-REFERENCE.md`, "Document known gotchas as you hit them").
 
+## The pinned Node version in `.nvmrc` must actually satisfy every devDependency's engine range
+
+`.nvmrc` (currently `22.12.0`) is what CI, `actions/setup-node`, and a local `nvm use` all key
+off of — but nothing enforces that it's new enough for whatever's in `node_modules`. This bit
+a real CI run: `.nvmrc` was `20.11.0`, which satisfied every *runtime* requirement (this
+scaffold's own `engines.node`, at the time also `>=20.11.0`), but vitest 4's `rolldown`
+dependency requires `node:util`'s `styleText` export (added in Node 20.12.0) and otherwise
+declares `^20.19.0 || >=22.12.0` — so `npm run test:coverage` crashed at startup in CI with a
+`SyntaxError` on module load, despite `npm ci`, typecheck, and lint all succeeding first. It
+worked in local development because the local Node version happened to already be newer than
+`.nvmrc` specified — `.nvmrc` alone was never actually being validated against.
+
+Symptom to recognize: a `Startup Error` / `SyntaxError: The requested module 'node:util' does
+not provide an export named 'X'` from deep inside a dependency (`rolldown`, `vite`, etc.),
+immediately when a script starts, not a real test/type/lint failure. Fix is to bump `.nvmrc`
+(and `package.json`'s `engines.node`, and the `Dockerfile` base image) to whatever the
+*strictest* devDependency actually requires — check `npm ci`'s `EBADENGINE` warnings, which
+name the exact package and required range; don't just bump `.nvmrc` by one patch version and
+hope. After any major devDependency upgrade (especially vitest/vite), re-run `npm ci` on a
+clean `node_modules` and read the `EBADENGINE` warnings before assuming the pinned Node version
+still suffices.
+
 ## `npm audit` shows a moderate `@hono/node-server` vulnerability that isn't actually fixable here
 
 `@modelcontextprotocol/sdk` pins `@hono/node-server@^1.19.9`, which is affected by

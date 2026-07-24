@@ -108,7 +108,7 @@ Full reasoning for every one of these: `SPEC.md`.
 
 ## Toolchain & dependency baseline
 
-**Language/runtime: TypeScript on Node.js 20+.** This is the mainstream choice for MCP
+**Language/runtime: TypeScript on Node.js 22+ (LTS, 22.12.0 or later — see `.nvmrc`).** This is the mainstream choice for MCP
 servers today — the official TypeScript SDK is the most mature, the type system pays for
 itself directly in this scaffold's schema-driven design (a tool's `inputSchema`/`outputSchema`
 _are_ its TypeScript types via `z.infer`), and it's what most MCP tooling (Inspector, the
