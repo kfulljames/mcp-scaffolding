@@ -71,6 +71,44 @@ describe("defineTool contract", () => {
     ).toThrow(/no low-risk write/);
   });
 
+  it("refuses a delete-named write tool below risk high", () => {
+    expect(() =>
+      defineTool({
+        name: "vendor_delete_ticket",
+        description: "test",
+        preset: ["demo"],
+        access: {
+          mode: "write",
+          permissions: { allOf: ["ticket.delete"] },
+          risk: "medium",
+        },
+        inputSchema: z.object({ ticketId: z.number() }),
+        outputSchema: z.object({ deleted: z.boolean() }),
+        preview: async () => ({ action: "x", target: "x", proposedChanges: {} }),
+        execute: async () => ({ deleted: true }),
+      }),
+    ).toThrow(/delete\/remove semantics must declare risk "high"/);
+  });
+
+  it("allows a delete-named write tool at risk high", () => {
+    expect(() =>
+      defineTool({
+        name: "vendor_delete_ticket",
+        description: "test",
+        preset: ["demo"],
+        access: {
+          mode: "write",
+          permissions: { allOf: ["ticket.delete"] },
+          risk: "high",
+        },
+        inputSchema: z.object({ ticketId: z.number() }),
+        outputSchema: z.object({ deleted: z.boolean() }),
+        preview: async () => ({ action: "x", target: "x", proposedChanges: {} }),
+        execute: async () => ({ deleted: true }),
+      }),
+    ).not.toThrow();
+  });
+
   it("rejects a declared approval policy weaker than the risk baseline", () => {
     expect(() =>
       defineTool({

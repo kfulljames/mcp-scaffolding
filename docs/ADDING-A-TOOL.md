@@ -134,6 +134,10 @@ For a `high`-risk tool, insert a step 1.5: a _different_ authenticated principal
 `approve_operation` with the `approvalToken` from step 1. Step 2 additionally requires
 `approvalToken` in the input.
 
+This protocol only provides real safety if the **host** driving it actually stops at each
+gate instead of chaining the calls automatically — see `docs/HOST-INTEGRATION-CONTRACT.md`
+before enabling a new write tool for a host you haven't verified against it.
+
 ## Optional: bundling a sequence into a prompt
 
 If several tool calls together form a common workflow (daily triage, a monthly report), see

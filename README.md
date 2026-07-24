@@ -10,18 +10,34 @@ reviewable override, not just theoretical avoidance.
 
 ## Start here
 
-| I want to...                                                         | Read                        |
-| -------------------------------------------------------------------- | --------------------------- |
-| Understand the mandatory architecture and why it's shaped this way   | `SPEC.md`                   |
-| Add a tool to an existing server                                     | `docs/ADDING-A-TOOL.md`     |
-| Add or understand presets                                            | `docs/ADDING-A-PRESET.md`   |
-| Wire up auth, tenancy, and credentials                               | `docs/AUTHENTICATION.md`    |
-| Understand every security control this scaffold ships with           | `docs/SECURITY.md`          |
-| Deploy to Docker / Azure Container Apps / locally                    | `docs/DEPLOYMENT.md`        |
-| Avoid known footguns                                                 | `docs/KNOWN-GOTCHAS.md`     |
-| Run the full checklist from scaffold to production                   | `DEVELOPMENT-CHECKLIST.md`  |
-| Change the scaffold itself (not a server built from it)              | `CONTRIBUTING.md`           |
-| See what real-world MCP repos this scaffold's decisions are based on | `MCP-SCAFFOLD-REFERENCE.md` |
+| I want to...                                                         | Read                                |
+| -------------------------------------------------------------------- | ----------------------------------- |
+| Understand the mandatory architecture and why it's shaped this way   | `SPEC.md`                           |
+| Add a tool to an existing server                                     | `docs/ADDING-A-TOOL.md`             |
+| Add or understand presets                                            | `docs/ADDING-A-PRESET.md`           |
+| Wire up auth, tenancy, and credentials                               | `docs/AUTHENTICATION.md`            |
+| Understand every security control this scaffold ships with           | `docs/SECURITY.md`                  |
+| Know what a host must support for write approvals to actually work   | `docs/HOST-INTEGRATION-CONTRACT.md` |
+| Deploy to Docker / Azure Container Apps / locally                    | `docs/DEPLOYMENT.md`                |
+| Avoid known footguns                                                 | `docs/KNOWN-GOTCHAS.md`             |
+| Run the full checklist from scaffold to production                   | `DEVELOPMENT-CHECKLIST.md`          |
+| Change the scaffold itself (not a server built from it)              | `CONTRIBUTING.md`                   |
+| See what real-world MCP repos this scaffold's decisions are based on | `MCP-SCAFFOLD-REFERENCE.md`         |
+
+## Working in this repo with Claude Code
+
+This repo ships its own Claude Code operating layer, not just docs a human has to remember to
+open:
+
+- `CLAUDE.md` — the always-loaded cockpit placard: authority, required commands,
+  non-negotiables, a task-to-doc map.
+- `.claude/skills/nucleus-mcp-builder/` — a Skill that routes "add a tool" / "add a vendor" /
+  "review this server" requests to the right doc instead of requiring the whole spec read
+  every time.
+- `.claude/agents/mcp-security-reviewer.md` and `mcp-protocol-reviewer.md` — narrow review
+  agents scoped to exactly the concerns in `docs/SECURITY.md` and the MCP protocol
+  respectively. Dispatch them before merging any change to `src/auth/`, `src/safety/`,
+  `src/tools/`, or `src/server/`.
 
 ## Quickstart
 

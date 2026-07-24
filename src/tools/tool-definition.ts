@@ -79,6 +79,7 @@ export class InvalidToolDefinitionError extends Error {
 }
 
 const NAME_PATTERN = /^[a-z][a-z0-9]*(_[a-z0-9]+)*$/;
+const DELETE_NAME_PATTERN = /(^|_)(delete|remove|destroy|purge)(_|$)/;
 
 /**
  * The single source of truth for a tool. Registration, preset membership,
@@ -129,6 +130,22 @@ export function defineTool<TInput, TOutput, TVendor extends VendorClient = Vendo
     throw new InvalidToolDefinitionError(
       input.name,
       'write tools must declare risk "medium" or "high" — there is no low-risk write.',
+    );
+  }
+  if (
+    input.access.mode === "write" &&
+    DELETE_NAME_PATTERN.test(input.name) &&
+    input.access.risk !== "high"
+  ) {
+    // SPEC.md §7: "Deletes are risk: 'high' by definition." A human declaring the wrong
+    // risk tier for an obviously-destructive tool is exactly the mistake this check exists
+    // to catch at registration time rather than in production. This is a name heuristic,
+    // not a semantic analysis — it can't catch every destructive tool (nor should it try
+    // to guess), but a tool whose OWN name says delete/remove has no excuse.
+    throw new InvalidToolDefinitionError(
+      input.name,
+      'a tool named with delete/remove semantics must declare risk "high" — deletes are ' +
+        "always high-risk by definition (SPEC.md §7).",
     );
   }
 

@@ -50,6 +50,12 @@ and check items off as you go.
 - [ ] Write tools additionally have security tests: absent under `READ_ONLY=true`, rejects
       execute without dry run, rejects reused/expired/mismatched tokens, `high` risk rejects
       without human approval.
+- [ ] `tests/contract/registry-invariants.test.ts` still passes with the new tool included —
+      it inherits these checks generically; no need to hand-write most of them per tool.
+- [ ] For any new write tool: the target host(s) can actually satisfy
+      `docs/HOST-INTEGRATION-CONTRACT.md` (render `preview_*` output, drive `approve_operation`
+      from a distinct approver for `high` risk) — or the tool stays `READ_ONLY=true`-gated
+      for that host.
 - [ ] At least one usage example per tool (or reuse `examples/` as the template).
 
 ## 5. Safety verification

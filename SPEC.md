@@ -24,7 +24,7 @@ Companion documents:
 - Full dynamic tool discovery (search-based). Presets cover this need for now — see §5.
 - Natural-language dispatch routing.
 - Cross-server orchestration or a meta-server that talks to multiple vendor servers at once.
-- A generic `custom_request` fallback enabled by default (it exists, opt-in, heavily restricted — deferred to v2, see §15).
+- A generic `custom_request` fallback. Not included in v1 at all — if introduced in v2, it will be opt-in and heavily restricted (see §15).
 
 ---
 
