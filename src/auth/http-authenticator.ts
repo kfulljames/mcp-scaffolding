@@ -29,7 +29,9 @@ export interface HttpAuthenticator {
 export class NoAuthAuthenticator implements HttpAuthenticator {
   constructor(private readonly principal: AuthenticatedPrincipal) {}
 
-  authenticate(): Promise<AuthenticatedPrincipal> {
+  authenticate(
+    _headers: Record<string, string | string[] | undefined>,
+  ): Promise<AuthenticatedPrincipal> {
     return Promise.resolve(this.principal);
   }
 }
@@ -111,7 +113,9 @@ export class ApiKeyAuthenticator implements HttpAuthenticator {
  * to model this on before replacing this class.
  */
 export class EntraAuthenticator implements HttpAuthenticator {
-  authenticate(): Promise<AuthenticatedPrincipal> {
+  authenticate(
+    _headers: Record<string, string | string[] | undefined>,
+  ): Promise<AuthenticatedPrincipal> {
     return Promise.reject(
       new AuthenticationError(
         "AUTH_MODE=entra is not implemented in this template — it is a deliberate stub. " +

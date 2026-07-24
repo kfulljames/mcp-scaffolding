@@ -16,16 +16,13 @@
 Run before considering any change to `src/`, `examples/`, or `tests/` complete:
 
 ```bash
-npm run format:check   # or npm run format to fix
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm run generate:catalogue
+npm run verify
 ```
 
-`npm run verify` runs typecheck + lint + test + catalogue generation in one command — still
-run `npm run build` and `npm run format:check` around it; `verify` doesn't include either.
+This runs format check, typecheck, lint, **`test:coverage`** (not plain `test` — coverage
+thresholds are a real gate, see `docs/KNOWN-GOTCHAS.md`), build, and catalogue generation, in
+that order — the same set CI enforces. `npm test` alone is fine for the fast inner loop while
+iterating, but passing `npm test` does not mean CI will pass; only `npm run verify` does.
 
 ## Non-negotiables
 

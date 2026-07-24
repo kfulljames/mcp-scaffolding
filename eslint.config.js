@@ -60,6 +60,16 @@ export default tseslint.config(
     },
   },
   {
+    // Integration tests legitimately act as an HTTP *client* driving a real listening
+    // instance of our own server (the same role `curl`/MCP Inspector play in manual
+    // smoke tests) — that's a different thing from vendor-client code bypassing
+    // VendorHttpClient, which is what the no-restricted-syntax rule above targets.
+    files: ["tests/integration/**"],
+    rules: {
+      "no-restricted-syntax": "off",
+    },
+  },
+  {
     // The one sanctioned place fetch() is called directly — every other vendor
     // client is expected to route through this file. See its own doc comment.
     files: ["src/vendor/http-client.ts"],

@@ -10,10 +10,14 @@ export interface Metrics {
 }
 
 export class NoopMetrics implements Metrics {
-  incrementCounter(): void {
+  incrementCounter(_name: string, _labels?: Record<string, string>): void {
     /* no-op default; wire a real backend before production use */
   }
-  recordHistogram(): void {
+  recordHistogram(
+    _name: string,
+    _valueMs: number,
+    _labels?: Record<string, string>,
+  ): void {
     /* no-op default; wire a real backend before production use */
   }
 }

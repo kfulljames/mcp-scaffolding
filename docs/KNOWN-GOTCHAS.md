@@ -4,6 +4,34 @@ A running list of things that will bite you if you don't know them going in. Add
 the moment you hit something new and burn time on it — that's the whole value of this doc
 (see `MCP-SCAFFOLD-REFERENCE.md`, "Document known gotchas as you hit them").
 
+## `npm audit` shows a moderate `@hono/node-server` vulnerability that isn't actually fixable here
+
+`@modelcontextprotocol/sdk` pins `@hono/node-server@^1.19.9`, which is affected by
+[GHSA-frvp-7c67-39w9](https://github.com/advisories/GHSA-frvp-7c67-39w9) (a Windows-only path
+traversal in Hono's `serve-static` feature). This is not resolvable by bumping our own
+dependencies — even the latest published SDK version still requires that range. Tracked,
+accepted risk: `--audit-level=high` (what CI gates on) doesn't fail on it since it's
+`moderate`, and this scaffold's own HTTP transport (`src/server/transports.ts`) never uses
+Hono's static-file-serving feature at all, so the vulnerable code path isn't reachable through
+this scaffold's usage regardless. Re-check `npm audit` after bumping `@modelcontextprotocol/sdk`
+in the future — it may resolve on its own once upstream updates its `@hono/node-server` pin.
+
+## `npm run test:coverage` is what CI actually gates on, not `npm test`
+
+`npm test` (plain `vitest run`, no coverage) is the fast inner-loop command and is what you'll
+reach for locally. CI's "Typecheck, lint, test, build" job runs `npm run test:coverage`
+instead, which additionally enforces the coverage thresholds in `vitest.config.ts` (80%
+statements/functions/lines, 75% branches). A change that passes `npm test` locally can still
+fail CI if it drops coverage — run `npm run test:coverage` (or `npm run verify`, once it's
+updated to call it) before pushing, not just `npm test`. This bit the very first CI run against
+this scaffold: 58 tests passed locally, but coverage sat at ~46% because entire files
+(`src/auth/http-authenticator.ts`, `src/safety/rate-limiter.ts`, `src/server/transports.ts`,
+the bulk of `src/server/create-server.ts`, `src/vendor/http-client.ts`) had zero test coverage
+until `tests/integration/mcp-protocol.test.ts` (a real MCP `Client` talking to `buildMcpServer()`
+over `InMemoryTransport` — see `@modelcontextprotocol/sdk/inMemory.js`) and
+`tests/integration/http-transport.test.ts` (a real listening HTTP server) were added
+specifically to close those gaps.
+
 ## In-memory safety stores don't survive a restart or a second instance
 
 `InMemoryOperationTokenStore`, `InMemoryApprovalService`, and `TokenBucketRateLimiter` are all

@@ -20,7 +20,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "generate:catalogue": "tsx scripts/generate-catalogue.ts",
-    "verify": "npm run typecheck && npm run lint && npm run test && npm run generate:catalogue"
+    "verify": "npm run format:check && npm run typecheck && npm run lint && npm run test:coverage && npm run build && npm run generate:catalogue"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.15.0",
@@ -32,7 +32,7 @@
     "@eslint/js": "^9.15.0",
     "@types/express": "^4.17.21",
     "@types/node": "^22.10.0",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "pino-pretty": "^13.0.0",
@@ -40,6 +40,6 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.16.0",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.10"
   }
 }
